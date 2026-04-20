@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import '../model/site.dart';
 import 'addSiteBtn.dart';
-import 'siteDetailPage.dart';
+import '../pages/siteDetailPage.dart';
 
 class SiteTile extends StatelessWidget {
   final Site site;
@@ -47,23 +47,11 @@ class SiteTile extends StatelessWidget {
       '👻', //基本上一般人不會想去，或是地理條件的要求很高
       '👽', //只有極少數人才"有機會"能前往、環境本身非常嚴苛，且該地點非常冷門
     ];
-    //clamp確保value在有效emoji索引範圍內
-    final filled = value.clamp(1, emojis.length - 1);
+    //clamp確保value在1到9之間
+    final filled = value.clamp(1, 9);
     return Row(
       mainAxisSize: MainAxisSize.min,
-      children: [
-        Text(
-          emojis[filled],
-          style: const TextStyle(
-            fontSize: 20,
-            fontFamilyFallback: [
-              'Segoe UI Emoji',
-              'Noto Color Emoji',
-              'Apple Color Emoji',
-            ],
-          ),
-        ),
-      ],
+      children: [Text(emojis[filled], style: const TextStyle(fontSize: 20))],
     );
   }
 

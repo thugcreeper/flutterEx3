@@ -1,0 +1,70 @@
+import 'package:flutter/material.dart';
+import '../model/site.dart';
+import '../pages/siteDetailPage.dart';
+
+class SiteCard extends StatelessWidget {
+  final Site site;
+  final bool isFavorite;
+  final VoidCallback onToggleFavorite;
+  final VoidCallback? onTap;
+
+  const SiteCard({
+    super.key,
+    required this.site,
+    required this.isFavorite,
+    required this.onToggleFavorite,
+    this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      elevation: 2,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      child: Column(
+        children: [
+          Expanded(
+            flex: 5,
+            //收藏的景點可以點及圖片前往詳細葉面
+            child: GestureDetector(
+              onTap:
+                  onTap ??
+                  () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) => SiteDetailPage(
+                          site: site,
+                          isFavorite: isFavorite,
+                          onToggleFavorite: onToggleFavorite,
+                        ),
+                      ),
+                    );
+                  },
+              child: ClipRRect(
+                borderRadius: const BorderRadius.vertical(
+                  top: Radius.circular(12),
+                ),
+                //找不到就用範例圖片
+                child: Image.network(
+                  site.imageUrl ??
+                      'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTyjidfyUc5wxz5Wcy_gFcDHLiiALXblri48A&s',
+                  height: 120,
+                  width: double.infinity,
+                  fit: BoxFit.cover,
+                ),
+              ),
+            ),
+          ),
+          const SizedBox(height: 8),
+          Expanded(
+            flex: 1,
+            child: Text(
+              site.name,
+              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}

@@ -1,3 +1,4 @@
+//進入主頁面前的頁面
 import 'package:flutter/material.dart';
 
 class LandingPage extends StatelessWidget {
@@ -22,13 +23,13 @@ class LandingPage extends StatelessWidget {
               '【秘境程度】\n'
               '😇:熱門景點、容易抵達\n'
               '😏:熱門但交通稍少\n'
-              '😐:普通景點\n'
-              '😰:偏僻\n'
-              '😭:很偏僻\n'
-              '😵‍💫:難以抵達\n'
+              '😐:缺少大眾運輸，較不方便\n'
+              '😰:偏僻，但還不算很難抵達\n'
+              '😭:很偏僻，抵達難度較高\n'
+              '😵‍💫:難以抵達，且不是想去就能去\n'
               '💀:極冷門/危險\n'
               '👻:幾乎沒人去\n'
-              '👽:極端秘境',
+              '👽:極端秘境，只給有緣人',
               style: TextStyle(fontSize: 16, height: 1.5),
             ),
           ),
@@ -69,7 +70,7 @@ class LandingPage extends StatelessWidget {
                 const SizedBox(height: 16),
 
                 Text(
-                  'My Site Explorer',
+                  'Site Explorer',
                   style: TextStyle(
                     fontSize: 42,
                     fontWeight: FontWeight.bold,

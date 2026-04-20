@@ -4,13 +4,35 @@ import 'model/site.dart';
 import 'widgets/siteTile.dart';
 import 'widgets/favoriteSite.dart';
 import 'pages/landingPage.dart';
+import 'pages/browseSitesPage.dart';
+import 'service/playBGM.dart';
+import '../data/siteData.dart';
 
 void main() {
   runApp(const MyApp());
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({super.key});
+
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  //進入主頁面後開始撥放音樂
+  @override
+  void initState() {
+    super.initState();
+    PlayBgmService.instance.start();
+  }
+
+  //在應用程式結束前釋放資源，停止背景音樂
+  @override
+  void dispose() {
+    PlayBgmService.instance.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -41,7 +63,6 @@ class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key, required this.title});
 
   final String title;
-
   @override
   State<MyHomePage> createState() => _MyHomePageState();
 }
@@ -64,7 +85,7 @@ class _MyHomePageState extends State<MyHomePage> {
   //篩選tag
   List<String> get _allTags {
     final tags = <String>{};
-    for (final site in Sites) {
+    for (final site in siteForBrowse) {
       tags.addAll(site.tags);
     }
     final result = tags.toList();
@@ -89,10 +110,12 @@ class _MyHomePageState extends State<MyHomePage> {
 
   List<Site> get _filteredSites {
     if (_selectedTag == null) {
-      return Sites;
+      return siteForBrowse;
     }
 
-    return Sites.where((site) => site.tags.contains(_selectedTag)).toList();
+    return siteForBrowse
+        .where((site) => site.tags.contains(_selectedTag))
+        .toList();
   }
 
   void _toggleFavorite(Site site) {
@@ -109,6 +132,8 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
+    //tabController是用來控制TabBar和TabBarView的，當我們在FavoriteSite頁面按下尋找更多按鈕時，
+    //可以透過tabController切換到尋找更多頁面
     return DefaultTabController(
       length: 2,
       child: Scaffold(
@@ -143,73 +168,25 @@ class _MyHomePageState extends State<MyHomePage> {
             ],
           ),
         ),
+        //TabBarView 對應上方 TabBar 的兩個頁籤（尋找更多、已收藏）
+        //children[0] 是「尋找更多」頁面，顯示所有景點並支援篩選
+        //children[1] 是「已收藏」頁面，顯示使用者收藏的景點
         body: TabBarView(
           children: [
-            Column(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(12, 12, 12, 8),
-                  child: SingleChildScrollView(
-                    scrollDirection: Axis.horizontal,
-                    child: Row(
-                      children: [
-                        FilterChip(
-                          label: const Text('全部'),
-                          selected: _selectedTag == null,
-                          onSelected: (_) {
-                            setState(() {
-                              _selectedTag = null;
-                            });
-                          },
-                        ),
-                        const SizedBox(width: 8),
-                        ..._allTags.map((tag) {
-                          final isSelected = _selectedTag == tag;
-                          return Padding(
-                            padding: const EdgeInsets.only(right: 8),
-                            child: FilterChip(
-                              label: Text(tag),
-                              selected: isSelected,
-                              onSelected: (_) {
-                                setState(() {
-                                  _selectedTag = isSelected ? null : tag;
-                                });
-                              },
-                            ),
-                          );
-                        }),
-                      ],
-                    ),
-                  ),
-                ),
-                Expanded(
-                  child: _filteredSites.isEmpty
-                      ? Center(
-                          child: Text(
-                            '沒有符合這個標籤的景點',
-                            style: TextStyle(
-                              fontSize: 18,
-                              color: Theme.of(context).colorScheme.onBackground,
-                            ),
-                          ),
-                        )
-                      : ListView.separated(
-                          padding: const EdgeInsets.symmetric(vertical: 8),
-                          itemCount: _filteredSites.length,
-                          separatorBuilder: (context, index) =>
-                              const SizedBox(height: 4),
-                          itemBuilder: (context, index) {
-                            final site = _filteredSites[index];
-                            return SiteTile(
-                              site: site,
-                              isFavorite: _isFavorite(site),
-                              onToggleFavorite: () => _toggleFavorite(site),
-                            );
-                          },
-                        ),
-                ),
-              ],
+            //第一個頁籤：尋找更多景點
+            BrowseSitesPage(
+              allTags: _allTags,
+              selectedTag: _selectedTag,
+              onTagChanged: (tag) {
+                setState(() {
+                  _selectedTag = tag;
+                });
+              },
+              filteredSites: _filteredSites,
+              favoriteSites: _favoriteSites,
+              onToggleFavorite: _toggleFavorite,
             ),
+            //第二個頁籤：已收藏的景點
             FavoriteSite(favoriteSites: _favoriteSites),
           ],
         ),

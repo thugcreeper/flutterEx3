@@ -1,8 +1,8 @@
 //儲存收藏景點，用gridView顯示 每個景點預覽只放圖片與名稱，點擊後顯示詳細資訊
 import 'package:flutter/material.dart';
 import '../model/site.dart';
-import 'siteDetailPage.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'siteCard.dart';
 
 class FavoriteSite extends StatelessWidget {
   final List<Site> favoriteSites;
@@ -26,6 +26,7 @@ class FavoriteSite extends StatelessWidget {
               Navigator.of(context).pop();
             }
           },
+          //沒有加入任何景點時顯示文字與svg
           child: Column(
             mainAxisAlignment: .center,
             children: [
@@ -47,6 +48,7 @@ class FavoriteSite extends StatelessWidget {
         ),
       );
     }
+    //用gridVoew顯示景點卡片，每行兩個，卡片內容為圖片與名稱，點擊圖片可以前往詳細頁面
     return GridView.builder(
       padding: const EdgeInsets.all(12),
       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
@@ -57,56 +59,7 @@ class FavoriteSite extends StatelessWidget {
       itemCount: favoriteSites.length,
       itemBuilder: (context, index) {
         final site = favoriteSites[index];
-        return Card(
-          elevation: 2,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
-          ),
-          child: Column(
-            children: [
-              Expanded(
-                flex: 5,
-                //收藏的景點可以點及圖片前往詳細葉面
-                child: GestureDetector(
-                  onTap: () {
-                    Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (context) => SiteDetailPage(
-                          site: site,
-                          isFavorite: true,
-                          onToggleFavorite: () {},
-                        ),
-                      ),
-                    );
-                  },
-                  child: ClipRRect(
-                    borderRadius: const BorderRadius.vertical(
-                      top: Radius.circular(12),
-                    ),
-                    child: Image.network(
-                      site.imageUrl ??
-                          'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTyjidfyUc5wxz5Wcy_gFcDHLiiALXblri48A&s',
-                      height: 120,
-                      width: double.infinity,
-                      fit: BoxFit.cover,
-                    ),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 8),
-              Expanded(
-                flex: 1,
-                child: Text(
-                  site.name,
-                  style: const TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 16,
-                  ),
-                ),
-              ),
-            ],
-          ),
-        );
+        return SiteCard(site: site, isFavorite: true, onToggleFavorite: () {});
       },
     );
   }
