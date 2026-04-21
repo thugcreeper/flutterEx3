@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'model/site.dart';
-import 'widgets/siteTile.dart';
 import 'widgets/favoriteSite.dart';
 import 'pages/landingPage.dart';
 import 'pages/browseSitesPage.dart';
@@ -50,6 +49,7 @@ class _MyAppState extends State<MyApp> {
         onStart: (context) {
           Navigator.of(context).push(
             MaterialPageRoute(
+              settings: const RouteSettings(name: MyHomePage.routeName),
               builder: (_) => const MyHomePage(title: '個人旅遊景點介紹'),
             ),
           );
@@ -60,6 +60,8 @@ class _MyAppState extends State<MyApp> {
 }
 
 class MyHomePage extends StatefulWidget {
+  static const String routeName = '/home';
+
   const MyHomePage({super.key, required this.title});
 
   final String title;
@@ -187,7 +189,11 @@ class _MyHomePageState extends State<MyHomePage> {
               onToggleFavorite: _toggleFavorite,
             ),
             //第二個頁籤：已收藏的景點
-            FavoriteSite(favoriteSites: _favoriteSites),
+            FavoriteSite(
+              favoriteSites: _favoriteSites,
+              onToggleFavorite: _toggleFavorite,
+              isFavorite: _isFavorite,
+            ),
           ],
         ),
       ),

@@ -296,7 +296,8 @@ const List<Site> siteForBrowse = [
     tags: ['亞洲', '西藏', '布達拉宮', '秘境', '中國'],
     description: '''拉薩市（藏語：ལྷ་ས་）是中華人民共和國西藏自治區的首府，藏語意為「聖地」。這座城市擁有超過
          1300 年的歷史，因日照充足（每年超過 3000 小時）而享有「日光城」的美譽。''',
-    imageUrl: 'https://zh.wikipedia.org/zh-tw/%E6%8B%89%E8%90%A8%E5%B8%82',
+    imageUrl:
+        'https://static.liontech.com.tw/DS/go_images/7303/8245/8300/8301/Potala.webp',
     mapUrl: 'https://maps.app.goo.gl/2Gg6tbC6GtCcFYuH6',
     address: '中國西藏自治區拉薩市',
   ),

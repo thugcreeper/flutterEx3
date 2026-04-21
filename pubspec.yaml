@@ -64,6 +64,7 @@ flutter:
   assets:
     - assets/icons/
     - assets/audios/
+    - assets/images/
 
 
 flutter_launcher_icons:

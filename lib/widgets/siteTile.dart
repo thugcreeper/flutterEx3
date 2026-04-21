@@ -7,6 +7,8 @@ class SiteTile extends StatelessWidget {
   final Site site;
   final bool isFavorite;
   final VoidCallback onToggleFavorite;
+  final bool Function(Site)? isFavoriteForSite;
+  final Function(Site)? onToggleFavoriteForSite;
   final VoidCallback? onTap;
 
   const SiteTile({
@@ -14,6 +16,8 @@ class SiteTile extends StatelessWidget {
     required this.site,
     required this.isFavorite,
     required this.onToggleFavorite,
+    this.isFavoriteForSite,
+    this.onToggleFavoriteForSite,
     this.onTap,
   });
 
@@ -72,6 +76,8 @@ class SiteTile extends StatelessWidget {
                 site: site,
                 isFavorite: isFavorite,
                 onToggleFavorite: onToggleFavorite,
+                isFavoriteForSite: isFavoriteForSite,
+                onToggleFavoriteForSite: onToggleFavoriteForSite,
               ),
             ),
           );

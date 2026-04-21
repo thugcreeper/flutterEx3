@@ -6,6 +6,8 @@ class SiteCard extends StatelessWidget {
   final Site site;
   final bool isFavorite;
   final VoidCallback onToggleFavorite;
+  final bool Function(Site)? isFavoriteForSite;
+  final Function(Site)? onToggleFavoriteForSite;
   final VoidCallback? onTap;
 
   const SiteCard({
@@ -13,6 +15,8 @@ class SiteCard extends StatelessWidget {
     required this.site,
     required this.isFavorite,
     required this.onToggleFavorite,
+    this.isFavoriteForSite,
+    this.onToggleFavoriteForSite,
     this.onTap,
   });
 
@@ -32,10 +36,13 @@ class SiteCard extends StatelessWidget {
                   () {
                     Navigator.of(context).push(
                       MaterialPageRoute(
+                        settings: const RouteSettings(name: '/site-detail'),
                         builder: (context) => SiteDetailPage(
                           site: site,
                           isFavorite: isFavorite,
                           onToggleFavorite: onToggleFavorite,
+                          isFavoriteForSite: isFavoriteForSite,
+                          onToggleFavoriteForSite: onToggleFavoriteForSite,
                         ),
                       ),
                     );

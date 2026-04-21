@@ -51,13 +51,10 @@ class LandingPage extends StatelessWidget {
     return Scaffold(
       body: Container(
         decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: [
-              color.primary.withOpacity(0.9),
-              color.secondary.withOpacity(0.7),
-            ],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
+          image: const DecorationImage(
+            image: AssetImage('assets/images/background.gif'),
+            fit: BoxFit.cover,
+            colorFilter: ColorFilter.mode(Colors.black45, BlendMode.darken),
           ),
         ),
         child: Center(

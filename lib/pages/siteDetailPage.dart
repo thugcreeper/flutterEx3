@@ -1,4 +1,6 @@
 import 'dart:math';
+import 'package:flutter_hw3/main.dart';
+
 import '../data/siteData.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -15,12 +17,16 @@ class SiteDetailPage extends StatefulWidget {
   final double descriptionBodyFontSize;
   final bool isFavorite;
   final VoidCallback onToggleFavorite;
+  final bool Function(Site)? isFavoriteForSite;
+  final Function(Site)? onToggleFavoriteForSite;
 
   const SiteDetailPage({
     super.key,
     required this.site,
     required this.isFavorite,
     required this.onToggleFavorite,
+    this.isFavoriteForSite,
+    this.onToggleFavoriteForSite,
     this.titleFontSize = 30, //景點名稱的字體大小
     this.tagFontSize = 18, //hashtag的字體大小
     this.infoLabelFontSize = 20, //下方人氣程度、秘境程度、地點的字體大小
@@ -150,6 +156,9 @@ class _SiteDetailPageState extends State<SiteDetailPage> {
 
   @override
   Widget build(BuildContext context) {
+    final effectiveIsFavorite =
+        widget.isFavoriteForSite?.call(widget.site) ?? widget.isFavorite;
+
     final infoCardData = [
       {
         'title': '人氣程度',
@@ -170,6 +179,37 @@ class _SiteDetailPageState extends State<SiteDetailPage> {
 
     return Scaffold(
       appBar: AppBar(
+        // leading 放返回按鈕
+        leading: const BackButton(),
+        //actions放在title後方，home 放到 actions
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.home),
+            onPressed: () {
+              final navigator = Navigator.of(context);
+              var foundHome = false;
+              //popuntil會一直pop直到找到MyHomePage.routeName或者到達第一個route，
+              //如果找到MyHomePage.routeName就停下來，如果沒找到就停在第一個route，
+              //避免只用push導致已收藏景點狀態沒更新
+              navigator.popUntil((route) {
+                if (route.settings.name == MyHomePage.routeName) {
+                  foundHome = true;
+                  return true;
+                }
+                return route.isFirst;
+              });
+
+              if (!foundHome) {
+                navigator.pushReplacement(
+                  MaterialPageRoute(
+                    settings: const RouteSettings(name: MyHomePage.routeName),
+                    builder: (_) => const MyHomePage(title: '個人旅遊景點介紹'),
+                  ),
+                );
+              }
+            },
+          ),
+        ],
         title: Text('${widget.site.name}的詳細資訊'),
         backgroundColor: Color(0xFF42A5F5),
       ),
@@ -236,8 +276,10 @@ class _SiteDetailPageState extends State<SiteDetailPage> {
                   ),
                   const SizedBox(height: 14),
                   AddSiteBtn(
-                    isFavorite: widget.isFavorite,
-                    onPressed: widget.onToggleFavorite,
+                    isFavorite: effectiveIsFavorite,
+                    onPressed: widget.onToggleFavoriteForSite != null
+                        ? () => widget.onToggleFavoriteForSite!(widget.site)
+                        : widget.onToggleFavorite,
                   ),
                   const SizedBox(height: 18),
                   const Text(
@@ -257,8 +299,22 @@ class _SiteDetailPageState extends State<SiteDetailPage> {
                                 height: 210,
                                 child: SiteCard(
                                   site: recommendedSite,
-                                  isFavorite: false,
-                                  onToggleFavorite: () {},
+                                  isFavorite:
+                                      widget.isFavoriteForSite?.call(
+                                        recommendedSite,
+                                      ) ??
+                                      false,
+                                  onToggleFavorite: () {
+                                    if (widget.onToggleFavoriteForSite !=
+                                        null) {
+                                      widget.onToggleFavoriteForSite!(
+                                        recommendedSite,
+                                      );
+                                    }
+                                  },
+                                  isFavoriteForSite: widget.isFavoriteForSite,
+                                  onToggleFavoriteForSite:
+                                      widget.onToggleFavoriteForSite,
                                 ),
                               ),
                             ),

@@ -82,6 +82,8 @@ class BrowseSitesPage extends StatelessWidget {
                       site: site,
                       isFavorite: _isFavorite(site),
                       onToggleFavorite: () => onToggleFavorite(site),
+                      isFavoriteForSite: _isFavorite,
+                      onToggleFavoriteForSite: onToggleFavorite,
                     );
                   },
                 ),

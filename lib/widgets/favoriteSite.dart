@@ -6,8 +6,15 @@ import 'siteCard.dart';
 
 class FavoriteSite extends StatelessWidget {
   final List<Site> favoriteSites;
+  final Function(Site) onToggleFavorite;
+  final bool Function(Site) isFavorite;
 
-  const FavoriteSite({super.key, required this.favoriteSites});
+  const FavoriteSite({
+    super.key,
+    required this.favoriteSites,
+    required this.onToggleFavorite,
+    required this.isFavorite,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -59,7 +66,13 @@ class FavoriteSite extends StatelessWidget {
       itemCount: favoriteSites.length,
       itemBuilder: (context, index) {
         final site = favoriteSites[index];
-        return SiteCard(site: site, isFavorite: true, onToggleFavorite: () {});
+        return SiteCard(
+          site: site,
+          isFavorite: isFavorite(site),
+          onToggleFavorite: () => onToggleFavorite(site),
+          isFavoriteForSite: isFavorite,
+          onToggleFavoriteForSite: onToggleFavorite,
+        );
       },
     );
   }
