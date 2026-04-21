@@ -1,3 +1,4 @@
+//景點列表中的每個項目，包含國旗、名稱、人氣度、秘境程度、標籤和加入收藏按鈕
 import 'package:flutter/material.dart';
 import '../model/site.dart';
 import 'addSiteBtn.dart';

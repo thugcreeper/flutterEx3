@@ -1,3 +1,4 @@
+//這是一個提供收藏功能的Provider，讓不同頁面可以共享收藏資訊，避免傳遞參數的麻煩
 import 'package:flutter/material.dart';
 import '../model/site.dart';
 

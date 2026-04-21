@@ -1,3 +1,4 @@
+//詳細景點頁面，涉及查看景點都會來到此頁面
 import 'dart:math';
 import 'package:flutter_hw3/main.dart';
 

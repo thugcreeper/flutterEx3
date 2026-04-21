@@ -4,8 +4,10 @@ import 'model/site.dart';
 import 'widgets/favoriteSite.dart';
 import 'pages/landingPage.dart';
 import 'pages/browseSitesPage.dart';
+import 'pages/rankingPage.dart';
 import 'service/playBGM.dart';
 import '../data/siteData.dart';
+import 'data/rankingData.dart';
 
 void main() {
   runApp(const MyApp());
@@ -18,17 +20,40 @@ class MyApp extends StatefulWidget {
   State<MyApp> createState() => _MyAppState();
 }
 
-class _MyAppState extends State<MyApp> {
+class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   //進入主頁面後開始撥放音樂
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     PlayBgmService.instance.start();
+    // 啟動後補一次保險恢復，避免部分裝置首次啟動未出聲。
+    PlayBgmService.instance.onAppResumed();
+  }
+
+  //當應用程式進入背景或回到前景時，暫停或繼續撥放音樂
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    print('AppLifecycle changed: $state');
+    switch (state) {
+      case AppLifecycleState.paused:
+      case AppLifecycleState.hidden:
+        PlayBgmService.instance.onAppPaused();
+        break;
+      case AppLifecycleState.inactive:
+        break;
+      case AppLifecycleState.resumed:
+        PlayBgmService.instance.onAppResumed();
+        break;
+      case AppLifecycleState.detached:
+        break;
+    }
   }
 
   //在應用程式結束前釋放資源，停止背景音樂
   @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
     PlayBgmService.instance.dispose();
     super.dispose();
   }
@@ -36,6 +61,8 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      //不要顯示debug標誌
+      debugShowCheckedModeBanner: false,
       title: 'Flutter hw3',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Color(0xFF42A5F5)),
@@ -120,6 +147,11 @@ class _MyHomePageState extends State<MyHomePage> {
         .toList();
   }
 
+  // 由資料層提供排序結果，首頁僅負責組裝畫面。
+  List<Site> get _popularRanking => RankingData.popularRanking(siteForBrowse);
+
+  List<Site> get _secretRanking => RankingData.secretRanking(siteForBrowse);
+
   void _toggleFavorite(Site site) {
     final alreadyFavorite = _favoriteSites.contains(site);
 
@@ -137,7 +169,7 @@ class _MyHomePageState extends State<MyHomePage> {
     //tabController是用來控制TabBar和TabBarView的，當我們在FavoriteSite頁面按下尋找更多按鈕時，
     //可以透過tabController切換到尋找更多頁面
     return DefaultTabController(
-      length: 2,
+      length: 3,
       child: Scaffold(
         appBar: AppBar(
           title: Text(
@@ -167,6 +199,8 @@ class _MyHomePageState extends State<MyHomePage> {
                 ),
                 text: '已收藏',
               ),
+              // 第三個主分頁：排行榜。
+              const Tab(icon: Icon(Icons.leaderboard_outlined), text: '排行榜'),
             ],
           ),
         ),
@@ -193,6 +227,12 @@ class _MyHomePageState extends State<MyHomePage> {
               favoriteSites: _favoriteSites,
               onToggleFavorite: _toggleFavorite,
               isFavorite: _isFavorite,
+            ),
+            RankingPage(
+              popularSites: _popularRanking,
+              secretSites: _secretRanking,
+              isFavorite: _isFavorite,
+              onToggleFavorite: _toggleFavorite,
             ),
           ],
         ),

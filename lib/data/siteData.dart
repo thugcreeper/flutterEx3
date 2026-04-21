@@ -1,3 +1,4 @@
+//這裡存放景點資料
 import '../model/site.dart';
 
 //famousLevel最多 5 secretlevel最多9
@@ -689,7 +690,7 @@ const List<Site> siteForBrowse = [
     name: '斯瓦爾巴全球種子庫',
     countryFlag: '🇳🇴',
     secretLevel: 9,
-    famousLevel: 5,
+    famousLevel: 3,
     tags: ['歐洲', '北極圈', '科學', '秘境', '挪威'],
     description: '''斯瓦爾巴全球種子庫座落於北極圈內的挪威斯瓦爾巴群島，被譽為人類農業的「諾亞方舟」或
         「末日種子庫」。其核心目的是為全球農作物種子提供「備份」，以防因戰爭、自然災害、氣候變遷

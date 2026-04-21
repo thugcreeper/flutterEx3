@@ -1,3 +1,4 @@
+//景點卡片，外觀只包含圖片與名稱，點擊圖片會前往詳細頁面，收藏的景點也使用此widget
 import 'package:flutter/material.dart';
 import '../model/site.dart';
 import '../pages/siteDetailPage.dart';
